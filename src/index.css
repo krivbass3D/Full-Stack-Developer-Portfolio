@@ -1,0 +1,104 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-brand-primary: var(--color-indigo-600);
+  --color-brand-secondary: var(--color-indigo-400);
+  --color-accent-cyan: var(--color-cyan-400);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --animate-fade-in: fade-in 0.5s ease-out;
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+:root {
+  --bg-main: var(--color-slate-50);
+  --bg-card: var(--color-white);
+  --bg-nav: color-mix(in srgb, var(--color-white), transparent 50%);
+  --border-main: var(--color-slate-200);
+  --text-main: var(--color-slate-800);
+  --text-heading: var(--color-slate-950);
+  color-scheme: light;
+}
+
+.dark {
+  --bg-main: var(--color-slate-950);
+  --bg-card: color-mix(in srgb, var(--color-slate-900), transparent 60%);
+  --bg-nav: color-mix(in srgb, var(--color-slate-900), transparent 50%);
+  --border-main: var(--color-slate-800);
+  --text-main: var(--color-slate-200);
+  --text-heading: var(--color-slate-100);
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  @apply transition-colors duration-300;
+  font-family: var(--font-sans);
+}
+
+@layer base {
+  h1, h2, h3, h4 {
+    @apply transition-colors duration-300;
+    color: var(--text-heading);
+    @apply font-bold tracking-tight;
+  }
+}
+
+.sleek-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-main);
+  @apply backdrop-blur-sm rounded-2xl p-6 transition-all duration-300;
+}
+
+.sleek-nav {
+  background-color: var(--bg-nav);
+  border-color: var(--border-main);
+  @apply backdrop-blur-md rounded-xl p-4 transition-all duration-300;
+}
+
+.sleek-badge {
+  @apply px-2 py-1 text-[10px] uppercase font-bold tracking-wider rounded border transition-all;
+}
+
+.badge-indigo {
+  @apply bg-indigo-500/10 border-indigo-500/20 text-indigo-400;
+}
+
+.badge-cyan {
+  @apply bg-cyan-500/10 border-cyan-500/20 text-cyan-400;
+}
+
+.badge-slate {
+  @apply bg-slate-800 border-slate-700 text-slate-300;
+}
+
+.tech-tag {
+  @apply text-[10px] font-mono text-slate-500;
+}
+
+.ai-glow {
+  @apply shadow-[0_0_15px_-3px_rgba(34,211,238,0.3)] border-cyan-500/30;
+}
+
+.badge-ai {
+  @apply bg-cyan-500/10 border-cyan-400/40 text-cyan-300 shadow-[0_0_8px_-1px_rgba(34,211,238,0.4)];
+}
+
+@keyframes border-beam {
+  0% { offset-distance: 0%; }
+  100% { offset-distance: 100%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
