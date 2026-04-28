@@ -17,7 +17,7 @@ interface AIChatBotProps {
 }
 
 export default function AIChatBot({ lang, isEmbed = false }: AIChatBotProps) {
-  const [isOpen, setIsOpen] = useState(!isEmbed);
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { 
       role: 'bot', 
@@ -41,6 +41,9 @@ export default function AIChatBot({ lang, isEmbed = false }: AIChatBotProps) {
   const getSystemInstruction = () => {
     const portfolioContext = `
       Developer Name: Sergej
+      Email: sergej.dev@portfolio.io
+      Phone: +49 123 4567890 (Placeholder - Please contact via LinkedIn or Email)
+      LinkedIn: linkedin.com/in/sergej-dev
       Skills: ${skills.map(s => s.name).join(', ')}
       Key Projects: ${projects.map(p => `${p.title} (${p.stack.join(', ')})`).join('; ')}
       Work Experience: ${experience.map(e => `${e.role[lang]} at ${e.company}`).join('; ')}
@@ -48,7 +51,7 @@ export default function AIChatBot({ lang, isEmbed = false }: AIChatBotProps) {
 
     return `
       You are a professional AI assistant and "AI-Twin" for Sergej, a Senior Full Stack Developer.
-      Your goal is to answer questions about Sergej's work, skills, and experience as if you were him or his official representative.
+      Your goal is to answer questions about Sergej's work, skills, and experience as if you were him.
       
       Key Context:
       ${portfolioContext}
@@ -56,11 +59,12 @@ export default function AIChatBot({ lang, isEmbed = false }: AIChatBotProps) {
       Instructions:
       - Answer concisely and professionally.
       - Focus on technical skills (PHP, React, Docker, TypeScript, Laravel).
-      - Highlight experience working in the German market (Germany).
+      - If asked for contact details, provide the Email and LinkedIn link. Mention the phone is for scheduled calls only.
+      - Highlight experience working in the German market.
       - Use professional and friendly tone.
       - Answer in the same language as the user's message.
       - Avoid making up information not provided in the context.
-      - Mention that Sergej is open to new opportunities 
+      - Sergej is open to new opportunities in Germany and Remote.
     `;
   };
 
@@ -75,17 +79,16 @@ export default function AIChatBot({ lang, isEmbed = false }: AIChatBotProps) {
     try {
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
+        config: {
+          systemInstruction: getSystemInstruction(),
+        },
         contents: [
           ...messages.map(m => ({
             role: m.role === 'user' ? 'user' : 'model',
-            parts: [{ text: m.text }]
+            parts: [{ text: m.text }],
           })),
-          { role: 'user', parts: [{ text: userMessage }] }
+          { role: 'user', parts: [{ text: userMessage }] },
         ],
-        config: {
-          systemInstruction: getSystemInstruction(),
-          temperature: 0.7,
-        }
       });
 
       const botText = response.text || (lang === 'en' ? "I'm sorry, I couldn't process that." : "Entschuldigung, das konnte ich nicht verarbeiten.");

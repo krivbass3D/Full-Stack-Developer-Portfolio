@@ -28,11 +28,13 @@ export interface Project {
   challenges?: LocalizedText[];
   solutions?: LocalizedText[];
   aiAssisted?: boolean;
+  aiDescription?: LocalizedText;
 }
 
 export interface Experience {
   id: string;
   company: string;
+  companyUrl?: string;
   role: LocalizedText;
   period: string; // e.g. "2021 - Present"
   description: LocalizedText;
@@ -44,5 +46,5 @@ export interface Experience {
 export interface Skill {
   name: string;
   level?: number; // 0-100
-  category: 'backend' | 'frontend' | 'database' | 'devops' | 'tools' | 'ai' | 'other';
+  category: 'backend' | 'frontend' | 'database' | 'devops' | 'tools' | 'ai' | 'other' | 'cloud' | 'api' | 'testing';
 }

@@ -40,7 +40,7 @@ export async function analyzeJobMatch(jobDescription: string, lang: Language): P
     console.error("Gemini analysis failed:", error);
     return lang === 'en' 
       ? "AI analysis is currently unavailable. Please try again later."
-      : "KI-Analyse ist derzeit nicht verfügbar. Bitte versuchen Sie es später noch einmal.";
+      : "KI-Analyse ist derzeit nicht verfügbar. Bitte versuchen Sie es позже еще раз.";
   }
 }
 

@@ -31,6 +31,8 @@ import { projects, experience, skills } from './data';
 import { Language, Project } from './types';
 import { analyzeJobMatch, fetchMarketInsights } from './services/geminiService';
 import AIChatBot from './components/AIChatBot';
+import Contact from './components/Contact';
+import { Linkedin as LinkedinIcon, Github as GithubIcon, Mail as MailIcon, MessageCircle } from 'lucide-react';
 
 export default function App() {
   const [lang, setLang] = useState<Language>('de');
@@ -132,8 +134,24 @@ STACK: ${exp.stack.join(', ')}
     );
   };
 
+  const handleDownloadCV = () => {
+    // In a real app, the file would be in /public/
+    const url = '/CV_Bilai_Serhii_FullStack.pdf';
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'CV_Bilai_Serhii_FullStack.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    setToast(lang === 'en' ? 'Starting CV Download...' : 'Lebenslauf-Download startet...');
+    setTimeout(() => setToast(null), 3000);
+  };
+
   const t = {
     hero: {
+      greeting: lang === 'en' ? 'Hello, I\'m' : 'Hallo, ich bin',
+      name: 'Serhii Bilai',
       tagline: lang === 'en' ? 'Full Stack Developer' : 'Full Stack Entwickler',
       description: lang === 'en' 
         ? 'Building robust, scalable applications with PHP/Laravel and React.' 
@@ -184,9 +202,12 @@ STACK: ${exp.stack.join(', ')}
             <a href="#experience" className="hover:text-indigo-400 transition-colors uppercase tracking-wider text-[10px]">{t.sections.experience}</a>
             <button 
               onClick={() => setLang(lang === 'en' ? 'de' : 'en')}
-              className="text-[10px] font-bold uppercase hover:text-indigo-400 transition-colors"
+              className="p-1.5 bg-slate-200 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700/50 rounded-lg hover:border-indigo-500/50 transition-all flex items-center justify-center grayscale hover:grayscale-0"
+              title={lang === 'en' ? 'Switch to German' : 'Auf Englisch umstellen'}
             >
-              [{lang.toUpperCase()}]
+              <span className="text-lg leading-none filter drop-shadow-sm">
+                {lang === 'en' ? '🇺🇸' : '🇩🇪'}
+              </span>
             </button>
             <button 
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -206,8 +227,18 @@ STACK: ${exp.stack.join(', ')}
             </button>
           </div>
           <div className="flex w-full md:w-auto gap-3 justify-center">
-            <button className="flex-1 md:flex-none px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 rounded-lg text-[10px] uppercase font-bold transition-colors">{t.hero.cv}</button>
-            <button className="flex-1 md:flex-none px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-[10px] uppercase font-bold text-white transition-colors">{lang === 'en' ? 'Hire Me' : 'Kontakt'}</button>
+            <button 
+              onClick={handleDownloadCV}
+              className="flex-1 md:flex-none px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 rounded-lg text-[10px] uppercase font-bold transition-colors"
+            >
+              {t.hero.cv}
+            </button>
+            <a 
+              href="#contact"
+              className="flex-1 md:flex-none px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-[10px] uppercase font-bold text-white transition-colors shadow-lg shadow-indigo-600/20 text-center flex items-center justify-center"
+            >
+              {lang === 'en' ? 'Hire Me' : 'Kontakt'}
+            </a>
           </div>
         </nav>
       </div>
@@ -263,10 +294,18 @@ STACK: ${exp.stack.join(', ')}
                     </div>
                   </div>
                   <div>
-                    <p className="text-[10px] text-slate-500 mb-3 font-mono uppercase tracking-widest">Environment</p>
+                    <p className="text-[10px] text-slate-500 mb-3 font-mono uppercase tracking-widest">Infra & DB</p>
                     <div className="flex flex-wrap gap-2">
-                      {skills.filter(s => s.category === 'devops' || s.category === 'database').map(s => (
+                      {skills.filter(s => s.category === 'devops' || s.category === 'database' || s.category === 'cloud').map(s => (
                         <span key={s.name} className="sleek-badge badge-slate">{s.name}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-500 mb-3 font-mono uppercase tracking-widest">API & QA</p>
+                    <div className="flex flex-wrap gap-2">
+                      {skills.filter(s => s.category === 'api' || s.category === 'testing').map(s => (
+                        <span key={s.name} className="sleek-badge border border-slate-300 dark:border-slate-800 text-slate-500">{s.name}</span>
                       ))}
                     </div>
                   </div>
@@ -444,7 +483,15 @@ STACK: ${exp.stack.join(', ')}
                             <span className="text-[8px] uppercase tracking-tighter opacity-0 group-hover/ats:opacity-100 transition-opacity">ATS</span>
                           </button>
                         </h4>
-                        <p className="text-xs text-indigo-400">{exp.company} • {exp.location}</p>
+                        <p className="text-xs text-indigo-400">
+                          {exp.companyUrl ? (
+                            <a href={exp.companyUrl} target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-indigo-300 transition-colors">
+                              {exp.company}
+                            </a>
+                          ) : (
+                            exp.company
+                          )} • {exp.location}
+                        </p>
                       </div>
                       <span className="text-[10px] text-slate-500 font-mono flex-shrink-0">{exp.period}</span>
                     </div>
@@ -470,20 +517,22 @@ STACK: ${exp.stack.join(', ')}
           </div>
         </div>
 
-        {/* Compact Footer / Contact Bar */}
-        <footer className="mt-12 flex flex-col md:flex-row justify-between items-center sleek-card !p-4">
+            <Contact lang={lang} />
+
+            {/* Compact Footer / Contact Bar */}
+            <footer className="mt-12 flex flex-col md:flex-row justify-between items-center sleek-card !p-4">
           <div className="flex flex-wrap gap-4 mb-4 md:mb-0">
             <div className="flex items-center gap-2 text-[10px] text-slate-400 uppercase tracking-widest font-bold">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
               {lang === 'en' ? 'Available for Work' : 'Verfügbar'}
             </div>
             <span className="text-slate-700 hidden md:block">|</span>
-            <span className="text-[10px] text-slate-400 font-mono">alex.dev@portfolio.io</span>
+            <span className="text-[10px] text-slate-400 font-mono">sergej.belaj.kr@gmail.com</span>
           </div>
           <div className="flex gap-6">
-            <a href="#" className="text-[10px] text-slate-500 hover:text-indigo-400 uppercase font-bold tracking-widest transition-colors">LinkedIn</a>
-            <a href="#" className="text-[10px] text-slate-500 hover:text-indigo-400 uppercase font-bold tracking-widest transition-colors">GitHub</a>
-            <a href="#" className="text-[10px] text-slate-500 hover:text-indigo-400 uppercase font-bold tracking-widest transition-colors">Email</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-[10px] text-slate-500 hover:text-indigo-400 uppercase font-bold tracking-widest transition-colors">LinkedIn</a>
+            <a href="https://github.com/krivbass3D" target="_blank" rel="noopener noreferrer" className="text-[10px] text-slate-500 hover:text-indigo-400 uppercase font-bold tracking-widest transition-colors">GitHub</a>
+            <a href="https://wa.me/4915124113693" target="_blank" rel="noopener noreferrer" className="text-[10px] text-slate-500 hover:text-indigo-400 uppercase font-bold tracking-widest transition-colors">WhatsApp</a>
           </div>
         </footer>
       </main>
@@ -583,7 +632,7 @@ STACK: ${exp.stack.join(', ')}
                     <section className="p-4 bg-cyan-500/5 border border-cyan-500/20 rounded-xl flex items-start gap-4">
                       <Sparkles size={16} className="text-cyan-400 mt-1 flex-shrink-0" />
                       <p className="text-[10px] text-cyan-300 font-medium leading-relaxed italic">
-                        {t.modal.aiAssisted}
+                        {selectedProject.aiDescription ? selectedProject.aiDescription[lang] : t.modal.aiAssisted}
                       </p>
                     </section>
                   )}
@@ -774,8 +823,10 @@ STACK: ${exp.stack.join(', ')}
       </AnimatePresence>
 
       <footer className="py-12 text-center text-slate-500 text-[10px] tracking-widest uppercase font-mono">
-        &copy; {new Date().getFullYear()} — Full Stack Engineering Portfolio
+        &copy; {new Date().getFullYear()} — Serhii Bilai Engineering Portfolio
       </footer>
+
+      <AIChatBot lang={lang} />
     </div>
   );
 }
